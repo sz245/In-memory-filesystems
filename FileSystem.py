@@ -1,35 +1,28 @@
-import uuid
-
-class Folder:
-    def __init__(self, name, parent_dir=None):
-        self.id = uuid.uuid4()
-        self.name = name
-        self.dir = []
-        self.files = []
-        self.parent_dir = parent_dir
-
-class File:
-    def __init__(self, name, content=''):
-        self.name = name
-        self.content = list(content)
+from folder import Folder
 
 class FileSystem:
     def __init__(self, name =''):
         self.folder = Folder(name)
         self.root = self.folder
 
-    # get the current working directory
+    # get the current working directory path
     def current_dir(self): 
-        return self.folder.name
+        path = ''
+        traversePath = self.folder
+        while traversePath:
+            print(traversePath.name, path)
+            path = '/' + self.folder.name + path
+            traversePath = traversePath.parent_dir
+        return path
 
     # create a new directory
     def new_dir(self, name):
         dir_size = self.folder.dir
         for i in range(len(dir_size)):
             if dir_size[i].name == name:
-                return 'Directory Name Exists, Unable to create new directory'
+                return "Error: Directory Name Exists, Unable to create new directory"
         dir_size.append(Folder(name, self.folder))
-        return 'Success'
+        return "Success"
 
     # get the folder names in directory
     def dir_content(self):
@@ -44,32 +37,18 @@ class FileSystem:
         return arr
     
     # delete directory if empty else return error message
-    def dir_remove(self):
+    def dir_remove(self, name):
+        
         if len(self.folder.dir) == 0 and len(self.folder.files) == 0:
             parent_dir = self.folder.parent
             pop_val = parent_dir.dir
             pop_val.pop(self.folder)
             self.folder = parent_dir
-            return 'Success'
+            return "Success"
         else:
-            return 'Error, Can"t Delete: There are existing folders or files in current directory'
-
-fileSystem = FileSystem()
-'''while True:
-    user_input = input("Enter a command: ")
-    input_split = user_input.split(' ')
-    if user_input == "exit":
-        break
-    elif input_split[0] == 'getCurrent':
-        print(fileSystem.current_dir())
-    else:
-        break'''
-print(fileSystem.folder.id)        
-
+            return "Error, Can't Delete: There are existing folders or files in current directory"
 '''
-To Add Later: 
-Creation Time
-Last Modified Time
-Last Access Time
-Read Permissions
-Multiple Users?'''
+ elif input_split[0].lower() == "path" and len(input_split) == 1:
+        print(fileSystem.current_dir())
+    elif input_split[0].lower() == "find" and len(input_split) == 2:
+        print(fileSystem.new_dir(input_split[1]))'''
